@@ -1,13 +1,13 @@
 <script setup lang="ts">
 // 初始化页面
 const load = ref(true)
-const init = async () => {
+const init = () => {
   setTimeout(() => {
     load.value = false
   }, 500)
 }
 
-onMounted(async () => {
+onMounted(() => {
   init()
 })
 </script>
