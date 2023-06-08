@@ -1,6 +1,8 @@
 {
   "extends": "@antfu",
   "rules": {
-    "curly":["error","all"]
+    "curly":["error","all"],
+    "no-use-before-define": "off",
+    "vue/component-definition-name-casing": ["off"]
   }
 }

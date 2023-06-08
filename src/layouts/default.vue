@@ -1,34 +1,27 @@
 <script setup lang="ts">
-const router = useRouter()
-const index = () => {
-  router.push({ path: '/' })
-}
-const detail = () => {
-  router.push({ path: '/detail' })
-}
+import { bookmarksOutline, businessOutline } from 'ionicons/icons'
 </script>
 
 <template>
-  <main>
-    <router-view v-slot="{ Component, route }">
-      <keep-alive>
-        <component :is="Component" v-if="route.meta.keepAlive" :key="route.fullPath" />
-      </keep-alive>
-      <component :is="Component" v-if="!route.meta.keepAlive" :key="route.fullPath" />
-    </router-view>
-    <div class="text-center">
-      <van-button class="mr-30px" @click="index">
-        index
-      </van-button>
-      <van-button @click="detail">
-        detail
-      </van-button>
-    </div>
-    <div class="flex items-center justify-center mt-5 mx-auto text-center opacity-75 dark:opacity-50 text-sm">
-      [Layout]
-      <div class="icon-btn text-30px ml-10px" @click="toggleDark()">
-        <div dark:i-carbon-moon i-carbon-sun />
-      </div>
-    </div>
-  </main>
+  <ion-page>
+    <ion-tabs mode="md">
+      <ion-router-outlet />
+      <ion-tab-bar>
+        <ion-tab-button tab="index" href="/index">
+          <ion-icon :icon="businessOutline" />
+          <ion-label>index</ion-label>
+        </ion-tab-button>
+        <ion-tab-button tab="detail" href="/detail">
+          <ion-icon :icon="bookmarksOutline" />
+          <ion-label>detail</ion-label>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs>
+  </ion-page>
 </template>
+
+<style lang="less" ccoped>
+  ion-tab-bar{
+    border-top: 1px solid #f5f5f5;
+  }
+</style>

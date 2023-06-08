@@ -1,14 +1,5 @@
 <script setup lang="ts">
-import { onIonViewDidEnter } from '@ionic/vue'
-
 // 初始化页面
-onIonViewDidEnter(() => {
-  console.log('Home page did enter')
-})
-onMounted(() => {
-  console.log('onMounted')
-})
-console.log(2)
 </script>
 
 <template>
@@ -22,20 +13,19 @@ console.log(2)
           </a>
         </p>
         <p>
-          <em text-sm op75>this is index</em>
+          <em text-sm op75>this is detail</em>
         </p>
 
         <div py-4 />
+        <RouterLink to="/detail/card">
+          card
+        </RouterLink>
       </div>
     </ion-content>
   </ion-page>
 </template>
 
 <route lang="yaml">
-name:
-  index
-path:
-  /index
 meta:
   layout:
     default

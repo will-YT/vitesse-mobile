@@ -1,15 +1,17 @@
-import path from 'path'
+import path from 'node:path'
 import { defineConfig, loadEnv } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import Pages from 'vite-plugin-pages'
 import Layouts from 'vite-plugin-vue-layouts'
 import Components from 'unplugin-vue-components/vite'
-import { VantResolver } from 'unplugin-vue-components/resolvers'
+import { IonicResolver, VantResolver } from 'unplugin-vue-components/resolvers'
 import AutoImport from 'unplugin-auto-import/vite'
-// import legacy from '@vitejs/plugin-legacy'
 import postcsspxtoviewport from 'postcss-px-to-viewport'
 import Unocss from 'unocss/vite'
+import legacy from '@vitejs/plugin-legacy'
+
+// import { visualizer } from 'rollup-plugin-visualizer'
 
 const outputDirMap: any = {
   openapi: 'dist-openapi',
@@ -28,23 +30,28 @@ export default ({ mode }: any) => {
     },
     plugins: [
       Vue({
-        reactivityTransform: true,
+        script: {
+          propsDestructure: true,
+          defineModel: true,
+        },
+        include: [/\.vue$/, /\.tsx$/],
       }),
       vueJsx({
       // options are passed on to @vue/babel-plugin-jsx
       }),
       // 兼容插件，可自行修改
-      // legacy({
-      //   targets: ['defaults', 'not IE 11'],
-      // }),
+      legacy({
+        targets: ['defaults', 'not IE 11'],
+      }),
       // https://github.com/hannoeru/vite-plugin-pages
       Pages({
+        extensions: ['vue', 'tsx'],
+        exclude: ['**/components/*.vue', '**/components/*.tsx'],
         extendRoute(route) {
           if (route.path === '/') {
             // Index is unauthenticated.
             return route
           }
-
           // Augment the route with meta that indicates that the route requires authentication.
           return {
             ...route,
@@ -52,34 +59,18 @@ export default ({ mode }: any) => {
         },
       }),
       Layouts(),
-      // createStyleImportPlugin({
-      //   resolves: [
-      //     VantResolve(),
-      //   ],
-      //   libs: [
-      //     // If you don’t have the resolve you need, you can write it directly in the lib, or you can provide us with PR
-      //     {
-      //       libraryName: 'vant',
-      //       esModule: true,
-      //       resolveStyle: (name) => {
-      //         return `vant/es/${name}/style`
-      //       },
-      //     },
-      //   ],
-      // }),
       // https://github.com/antfu/unplugin-auto-import
       AutoImport({
         imports: [
           'vue',
-          'vue/macros',
           'vue-router',
+          'vue/macros',
           '@vueuse/core',
           'pinia',
         ],
         dts: true,
         dirs: [
-          './src/composables',
-          './src/composables/utils',
+          './src/composables/**',
         ],
         vueTemplate: true,
       }),
@@ -87,13 +78,14 @@ export default ({ mode }: any) => {
       // https://github.com/antfu/vite-plugin-components
       Components({
         dts: true,
-        dirs: ['src/components', 'src/pages/components'],
-        resolvers: [VantResolver()],
+        dirs: ['**/components'],
+        resolvers: [VantResolver(), IonicResolver()],
       }),
 
       // https://github.com/antfu/unocss
       // see unocss.config.ts for config
       Unocss(),
+      // visualizer({ open: true }),
     ],
     css: {
       postcss: {
@@ -150,8 +142,8 @@ export default ({ mode }: any) => {
     server: {
       host: '0.0.0.0',
       proxy: {
-        '^/v4': {
-          target: '/',
+        '^/api': {
+          target: '',
           changeOrigin: true,
           rewrite: (path) => {
             return path.replace(/^\./, '')
