@@ -1,32 +1,47 @@
 <script setup lang="ts">
 // 初始化页面
+const page = ref(null)
+const modal = ref(null)
+const presentingElement = ref(null)
+function dismiss() {
+  (modal.value as any).$el.dismiss()
+}
+onMounted(() => {
+  presentingElement.value = (page.value as any).$el
+})
 </script>
 
 <template>
-  <ion-page>
+  <ion-page ref="page">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Inline Modal</ion-title>
+      </ion-toolbar>
+    </ion-header>
     <ion-content>
-      <van-cell-group>
-        <van-cell title="单元格" value="内容" />
-        <van-cell title="单元格" value="内容" label="描述信息" />
-      </van-cell-group>
-      <van-button type="primary">
-        主要按钮
-      </van-button>
-      <van-button type="success">
-        成功按钮
-      </van-button>
-      <van-button type="default">
-        默认按钮
-      </van-button>
-      <van-button type="warning">
-        警告按钮
-      </van-button>
-      <van-button type="danger">
-        危险按钮
-      </van-button>
-      <RouterLink to="/detail/dd" class="text-36px">
-        dd
-      </RouterLink>
+      <ion-button id="open-modal" expand="block">
+        Open
+      </ion-button>
+
+      <ion-modal ref="modal" trigger="open-modal" :presenting-element="presentingElement">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Modal</ion-title>
+            <ion-buttons slot="end">
+              <ion-button @click="dismiss()">
+                Close
+              </ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <ion-list>
+            <ion-button router-link="/detail/dd" @click="dismiss()">
+              Default
+            </ion-button>
+          </ion-list>
+        </ion-content>
+      </ion-modal>
     </ion-content>
   </ion-page>
 </template>
